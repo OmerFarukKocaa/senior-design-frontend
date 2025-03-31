@@ -1,33 +1,57 @@
 <header class="top-header">
-  <img src="assets/logo-transparent.png" alt="University Logo" class="header-logo">
+  <img src="assets/logo-transparent.png" alt="University Logo" class="header-logo" />
   <h1>Acıbadem Üniversitesi Öğrenci İşleri</h1>
 </header>
 
-<button class="dark-mode-toggle">🌙</button>
+<button class="dark-mode-toggle" (click)="toggleDarkMode()">
+  {{ isDarkMode ? '☀️' : '🌙' }}
+</button>
 
 <div class="chatbot">
   <header>
     <h2>Öğrenci Yapay Zeka Asistanı</h2>
   </header>
+
   <ul class="chatbox">
     <li class="incoming chat">
       <span>
-        <img src="assets/logo-transparent.png"  alt="Chatbot Logo" style="width: 32px; height: 32px;">
+        <img src="assets/logo-transparent.png" alt="Chatbot Logo" style="width: 32px; height: 32px;" />
       </span>
-      <p>Merhabalar 👋 <br> Bugün size nasıl yardımcı olabilirim?</p>
+      <p>Merhabalar 👋 <br />Bugün size nasıl yardımcı olabilirim?</p>
     </li>
+
+    <ng-container *ngFor="let msg of chatboxMessages">
+      <li [class]="msg.type + ' chat'">
+        <span *ngIf="msg.type === 'incoming'">
+          <img src="assets/logo-transparent.png" alt="Chatbot Logo" style="width: 32px; height: 32px;" />
+        </span>
+        <p>{{ msg.message }}</p>
+        <small *ngIf="msg.timestamp" style="display: block; font-size: 0.75rem; color: #888; margin-top: 5px;">
+          {{ msg.timestamp }}
+        </small>
+      </li>
+    </ng-container>
+
     <div class="faq-container">
       <ul class="faq-list">
-        <li class="faq-item">Ders programlarını nereden görüntüleyebilirim?</li>
-        <li class="faq-item">OBS/EYS’ye nasıl girilir?</li>
-        <li class="faq-item">Okul kimlik kartımı kaybettim, ne yapabilirim?</li>
-        <li class="faq-item">Sınav tarihleri nerede ve ne zaman açıklanacak?</li>
-        <li class="faq-item">Dönem başlangıç ve bitiş tarihleri nedir?</li>
+        <li
+          class="faq-item"
+          *ngFor="let question of faqItems"
+          (click)="handleFaqClick(question)"
+        >
+          {{ question }}
+        </li>
       </ul>
     </div>
   </ul>
+
   <div class="chat-input">
-    <textarea placeholder="Bir mesaj yaz..." required></textarea>
-    <span class="material-symbols-outlined">send</span>
+    <textarea
+      [(ngModel)]="chatInput"
+      placeholder="Bir mesaj yaz..."
+      required
+      (keydown)="handleKeyDown($event)"
+    ></textarea>
+    <span class="material-symbols-outlined" (click)="handleSendClick()">send</span>
   </div>
 </div>
